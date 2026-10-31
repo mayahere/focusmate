@@ -29,12 +29,12 @@ fun SetUpPomodoroScreen(
     timerViewModel: TimerViewModel,
     onNavigateBack: () -> Unit
 ) {
-    var focusMinutes by remember { mutableIntStateOf(TimerViewModel.FOCUS_DURATION / 60) }
-    var shortBreakMinutes by remember { mutableIntStateOf(TimerViewModel.SHORT_BREAK_DURATION / 60) }
-    var longBreakMinutes by remember { mutableIntStateOf(TimerViewModel.LONG_BREAK_DURATION / 60) }
-    var sessionsBeforeLongBreak by remember { mutableIntStateOf(TimerViewModel.SESSIONS_BEFORE_LONG_BREAK) }
-    var autoStartBreaks by remember { mutableStateOf(true) }
-    var autoStartFocus by remember { mutableStateOf(false) }
+    var focusMinutes by remember { mutableIntStateOf(timerViewModel.focusDuration / 60) }
+    var shortBreakMinutes by remember { mutableIntStateOf(timerViewModel.shortBreakDuration / 60) }
+    var longBreakMinutes by remember { mutableIntStateOf(timerViewModel.longBreakDuration / 60) }
+    var sessionsBeforeLongBreak by remember { mutableIntStateOf(timerViewModel.sessionsBeforeLongBreak) }
+    var autoStartBreaks by remember { mutableStateOf(timerViewModel.autoStartBreaks) }
+    var autoStartFocus by remember { mutableStateOf(timerViewModel.autoStartFocus) }
 
     Column(
         modifier = Modifier
@@ -73,18 +73,52 @@ fun SetUpPomodoroScreen(
                 color = TextPrimary,
                 modifier = Modifier.weight(1f)
             )
-            TextButton(onClick = {
-                focusMinutes = 25
-                shortBreakMinutes = 5
-                longBreakMinutes = 15
-                sessionsBeforeLongBreak = 4
-                autoStartBreaks = true
-                autoStartFocus = false
-            }) {
-                Text(
-                    "Đặt lại",
-                    color = PrimaryGreen,
-                    style = MaterialTheme.typography.labelLarge
+            Box(
+                modifier = Modifier
+                    .size(44.dp)
+                    .clip(CircleShape)
+                    .background(CreamCard)
+                    .clickable {
+                        focusMinutes = 25
+                        shortBreakMinutes = 5
+                        longBreakMinutes = 15
+                        sessionsBeforeLongBreak = 4
+                        autoStartBreaks = true
+                        autoStartFocus = false
+                    },
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    Icons.Default.Replay,
+                    contentDescription = "Đặt lại",
+                    tint = TextPrimary,
+                    modifier = Modifier.size(20.dp)
+                )
+            }
+            Spacer(modifier = Modifier.width(8.dp))
+            Box(
+                modifier = Modifier
+                    .size(44.dp)
+                    .clip(CircleShape)
+                    .background(PrimaryGreen)
+                    .clickable {
+                        timerViewModel.updateDurations(
+                            focusMinutes = focusMinutes,
+                            shortBreakMinutes = shortBreakMinutes,
+                            longBreakMinutes = longBreakMinutes,
+                            sessionsBeforeLongBreak = sessionsBeforeLongBreak,
+                            autoStartBreaks = autoStartBreaks,
+                            autoStartFocus = autoStartFocus
+                        )
+                        onNavigateBack()
+                    },
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    Icons.Default.Check,
+                    contentDescription = "Áp dụng",
+                    tint = Color.White,
+                    modifier = Modifier.size(20.dp)
                 )
             }
         }
@@ -128,7 +162,7 @@ fun SetUpPomodoroScreen(
                 title = "Phiên tập trung",
                 subtitle = "",
                 value = focusMinutes,
-                unit = "pht",
+                unit = "phút",
                 onDecrement = { if (focusMinutes > 1) focusMinutes-- },
                 onIncrement = { if (focusMinutes < 120) focusMinutes++ }
             )
@@ -140,7 +174,7 @@ fun SetUpPomodoroScreen(
                 iconBg = PriorityMediumBg,
                 iconTint = PriorityMedium,
                 title = "Nghỉ ngắn",
-                subtitle = "Thư giãn mắt va tư thế nào!",
+                subtitle = "Thư giãn mắt và tư thế nào!",
                 value = shortBreakMinutes,
                 unit = "phút",
                 onDecrement = { if (shortBreakMinutes > 1) shortBreakMinutes-- },
@@ -204,31 +238,6 @@ fun SetUpPomodoroScreen(
                 checked = autoStartFocus,
                 onToggle = { autoStartFocus = it }
             )
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            Button(
-                onClick = { onNavigateBack() },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(52.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = TabSelected,
-                    contentColor = Color.White
-                ),
-                shape = RoundedCornerShape(26.dp)
-            ) {
-                Icon(
-                    Icons.Default.PlayArrow,
-                    contentDescription = null,
-                    modifier = Modifier.size(20.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    "Áp dụng",
-                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold)
-                )
-            }
 
             Spacer(modifier = Modifier.height(24.dp))
         }

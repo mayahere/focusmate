@@ -473,8 +473,8 @@ private fun TaskCard(
 private fun PriorityBadge(priority: Priority) {
     val (bgColor, textColor, label) = when (priority) {
         Priority.HIGH -> Triple(PriorityHighBg, PriorityHigh, "Cao")
-        Priority.MEDIUM -> Triple(PriorityMediumBg, PriorityMedium, "Trung binh")
-        Priority.LOW -> Triple(PriorityLowBg, PriorityLow, "Thap")
+        Priority.MEDIUM -> Triple(PriorityMediumBg, PriorityMedium, "Trung bình")
+        Priority.LOW -> Triple(PriorityLowBg, PriorityLow, "Thấp")
     }
     Text(
         text = label,
@@ -772,7 +772,7 @@ fun TaskDialog(
                     }
                 },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = TabSelected,
+                    containerColor = PrimaryGreen,
                     contentColor = androidx.compose.ui.graphics.Color.White
                 ),
                 shape = RoundedCornerShape(20.dp)
@@ -786,14 +786,14 @@ fun TaskDialog(
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 if (onDelete != null) {
                     TextButton(onClick = onDelete) {
-                        Text("Xoa", color = PriorityHigh)
+                        Text("Xóa", color = PriorityHigh)
                     }
                 }
                 OutlinedButton(
                     onClick = onDismiss,
                     shape = RoundedCornerShape(20.dp)
                 ) {
-                    Text("Huy", color = TextSecondary)
+                    Text("Hủy", color = TextSecondary)
                 }
             }
         }
@@ -810,7 +810,7 @@ fun TaskDialog(
                     dueDate = datePickerState.selectedDateMillis
                     showDatePicker = false
                 }) {
-                    Text("")
+                    Text("OK")
                 }
             },
             dismissButton = {

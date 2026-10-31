@@ -18,6 +18,9 @@ interface TaskDao {
     @Query("SELECT * FROM tasks WHERE taskId = :taskId")
     suspend fun getTaskById(taskId: Int): TaskEntity?
 
+    @Query("SELECT * FROM tasks WHERE status != 'COMPLETED' AND taskId != :excludeTaskId ORDER BY createdAt ASC LIMIT 1")
+    suspend fun getNextActiveTask(excludeTaskId: Int): TaskEntity?
+
     @Insert
     suspend fun insertTask(task: TaskEntity): Long
 

@@ -47,6 +47,7 @@ fun FocusScreen(
     val isPaused by timerViewModel.isPaused.collectAsState()
     val selectedTask by timerViewModel.selectedTask.collectAsState()
     val completedCount by timerViewModel.completedFocusCount.collectAsState()
+    val taskCompletedSessions by timerViewModel.taskCompletedSessions.collectAsState()
     val suggestedNext by timerViewModel.suggestedNextSession.collectAsState()
     val tasks by taskViewModel.tasks.collectAsState()
 
@@ -54,7 +55,18 @@ fun FocusScreen(
 
     val totalDuration = timerViewModel.totalDuration
     val progress = if (totalDuration > 0) remainingSeconds.toFloat() / totalDuration else 1f
-    val sessionNumber = (completedCount % TimerViewModel.SESSIONS_BEFORE_LONG_BREAK) + 1
+
+    // Task-specific: show "Phiên X / task.focusSessions" when a task is selected
+    // Global fallback: show Pomodoro cycle counter
+    val sessionNumber: Int
+    val sessionTotal: Int
+    if (selectedTask != null) {
+        sessionNumber = taskCompletedSessions + 1
+        sessionTotal = selectedTask!!.focusSessions
+    } else {
+        sessionNumber = (completedCount % timerViewModel.sessionsBeforeLongBreak) + 1
+        sessionTotal = timerViewModel.sessionsBeforeLongBreak
+    }
 
     Column(
         modifier = Modifier
@@ -255,7 +267,7 @@ fun FocusScreen(
                     Spacer(modifier = Modifier.height(4.dp))
 
                     Text(
-                        text = "Phiên $sessionNumber / ${TimerViewModel.SESSIONS_BEFORE_LONG_BREAK}",
+                        text = "Phiên $sessionNumber / $sessionTotal",
                         style = MaterialTheme.typography.bodyMedium,
                         color = TextSecondary
                     )
